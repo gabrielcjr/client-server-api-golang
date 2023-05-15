@@ -28,9 +28,18 @@ type Price struct {
 }
 
 type Prices struct {
-	gorm.Model
-	ID    int `gorm:"primaryKey"`
-	Price *Price
+	ID         int    `gorm:"primaryKey"`
+	Code       string `json:"code"`
+	Codein     string `json:"codein"`
+	Name       string `json:"name"`
+	High       string `json:"high"`
+	Low        string `json:"low"`
+	VarBid     string `json:"varBid"`
+	PctChange  string `json:"pctChange"`
+	Bid        string `json:"bid"`
+	Ask        string `json:"ask"`
+	Timestamp  string `json:"timestamp"`
+	CreateDate string `json:"create_date"`
 }
 
 func main() {
@@ -54,11 +63,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(resp)
-	// err = insertPrice(resp)
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	return
-	// }
 }
 
 func getUSD() (*Price, error) {
@@ -92,13 +96,28 @@ func getUSD() (*Price, error) {
 }
 
 func insertPrice(price *Price) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	defer cancel()
 	db, err := gorm.Open(sqlite.Open("price.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-
 	db.AutoMigrate(&Prices{})
-	db.Create(&Prices{Price: price})
+	tx := db.WithContext(ctx)
+
+	tx.Create(&Prices{
+		Code:       price.Usdbrl.Code,
+		Codein:     price.Usdbrl.Codein,
+		Name:       price.Usdbrl.Name,
+		High:       price.Usdbrl.High,
+		Low:        price.Usdbrl.Low,
+		VarBid:     price.Usdbrl.VarBid,
+		PctChange:  price.Usdbrl.PctChange,
+		Bid:        price.Usdbrl.Bid,
+		Ask:        price.Usdbrl.Ask,
+		Timestamp:  price.Usdbrl.Timestamp,
+		CreateDate: price.Usdbrl.CreateDate,
+	})
 
 	return nil
 }

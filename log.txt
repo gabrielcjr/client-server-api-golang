@@ -1,0 +1,19 @@
+samuelmolling@BRRGSNM038776 server % go run server.go
+
+2023/05/15 14:48:39 /Users/samuelmolling/Documents/github/client-server-api-golang/server/server.go:93
+[error] invalid field found for struct main.ResponseAPI's field Usdbrl: define a valid foreign key for relations or implement the Valuer/Scanner interface
+
+2023/05/15 14:48:39 /Users/samuelmolling/Documents/github/client-server-api-golang/server/server.go:93
+[error] failed to parse value &main.ResponseAPI{Usdbrl:struct { Code string "json:\"code\""; Codein string "json:\"codein\""; Name string "json:\"name\""; High string "json:\"high\""; Low string "json:\"low\""; VarBid string "json:\"varBid\""; PctChange string "json:\"pctChange\""; Bid string "json:\"bid\""; Ask string "json:\"ask\""; Timestamp string "json:\"timestamp\""; CreateDate string "json:\"create_date\"" }{Code:"", Codein:"", Name:"", High:"", Low:"", VarBid:"", PctChange:"", Bid:"", Ask:"", Timestamp:"", CreateDate:""}}, got error invalid field found for struct main.ResponseAPI's field Usdbrl: define a valid foreign key for relations or implement the Valuer/Scanner interface
+
+2023/05/15 14:48:39 /Users/samuelmolling/Documents/github/client-server-api-golang/server/server.go:93
+[error] invalid field found for struct main.ResponseAPI's field Usdbrl: define a valid foreign key for relations or implement the Valuer/Scanner interface
+
+2023/05/15 14:48:39 /Users/samuelmolling/Documents/github/client-server-api-golang/server/server.go:93
+[error] invalid field found for struct main.ResponseAPI's field Usdbrl: define a valid foreign key for relations or implement the Valuer/Scanner interface
+
+2023/05/15 14:48:39 /Users/samuelmolling/Documents/github/client-server-api-golang/server/server.go:93
+[error] failed to parse value &main.ResponseAPI{Usdbrl:struct { Code string "json:\"code\""; Codein string "json:\"codein\""; Name string "json:\"name\""; High string "json:\"high\""; Low string "json:\"low\""; VarBid string "json:\"varBid\""; PctChange string "json:\"pctChange\""; Bid string "json:\"bid\""; Ask string "json:\"ask\""; Timestamp string "json:\"timestamp\""; CreateDate string "json:\"create_date\"" }{Code:"", Codein:"", Name:"", High:"", Low:"", VarBid:"", PctChange:"", Bid:"", Ask:"", Timestamp:"", CreateDate:""}}, got error invalid field found for struct main.ResponseAPI's field Usdbrl: define a valid foreign key for relations or implement the Valuer/Scanner interface
+
+2023/05/15 14:48:39 /Users/samuelmolling/Documents/github/client-server-api-golang/server/server.go:93
+[error] invalid field found for struct main.ResponseAPI's field Usdbrl: define a valid foreign key for relations or implement the Valuer/Scanner interface

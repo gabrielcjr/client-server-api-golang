@@ -28,18 +28,8 @@ type ResponseAPI struct {
 }
 
 type Prices struct {
-	ID         int    `gorm:"primaryKey"`
-	Code       string `json:"code"`
-	Codein     string `json:"codein"`
-	Name       string `json:"name"`
-	High       string `json:"high"`
-	Low        string `json:"low"`
-	VarBid     string `json:"varBid"`
-	PctChange  string `json:"pctChange"`
-	Bid        string `json:"bid"`
-	Ask        string `json:"ask"`
-	Timestamp  string `json:"timestamp"`
-	CreateDate string `json:"create_date"`
+	ID int `gorm:"primaryKey"`
+	ResponseAPI
 }
 
 func main() {
@@ -100,7 +90,7 @@ func connDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db.AutoMigrate(&Prices{})
+	db.AutoMigrate(&Prices{}, &ResponseAPI{})
 	return db, nil
 }
 
@@ -110,27 +100,12 @@ func insertPrice(price *ResponseAPI) error {
 		return err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Nanosecond)
 	defer cancel()
 
-	select {
-	case <-ctx.Done():
-		println("timeout")
-		return ctx.Err()
-	default:
-		db.WithContext(ctx).Create(&Prices{
-			Code:       price.Usdbrl.Code,
-			Codein:     price.Usdbrl.Codein,
-			Name:       price.Usdbrl.Name,
-			High:       price.Usdbrl.High,
-			Low:        price.Usdbrl.Low,
-			VarBid:     price.Usdbrl.VarBid,
-			PctChange:  price.Usdbrl.PctChange,
-			Bid:        price.Usdbrl.Bid,
-			Ask:        price.Usdbrl.Ask,
-			Timestamp:  price.Usdbrl.Timestamp,
-			CreateDate: price.Usdbrl.CreateDate,
-		})
-	}
+	db.WithContext(ctx).Create(&Prices{
+		ResponseAPI: *price,
+	})
+
 	return nil
 }

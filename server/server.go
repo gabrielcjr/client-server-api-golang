@@ -12,6 +12,7 @@ import (
 )
 
 type ResponseAPI struct {
+	gorm.Model
 	Usdbrl struct {
 		Code       string `json:"code"`
 		Codein     string `json:"codein"`
@@ -28,18 +29,9 @@ type ResponseAPI struct {
 }
 
 type Prices struct {
+	gorm.Model
 	ID         int    `gorm:"primaryKey"`
-	Code       string `json:"code"`
-	Codein     string `json:"codein"`
-	Name       string `json:"name"`
-	High       string `json:"high"`
-	Low        string `json:"low"`
-	VarBid     string `json:"varBid"`
-	PctChange  string `json:"pctChange"`
-	Bid        string `json:"bid"`
-	Ask        string `json:"ask"`
-	Timestamp  string `json:"timestamp"`
-	CreateDate string `json:"create_date"`
+	ResponseAPI ResponseAPI `gorm:"-"` 
 }
 
 func main() {
@@ -119,18 +111,33 @@ func insertPrice(price *ResponseAPI) error {
 		return ctx.Err()
 	default:
 		db.WithContext(ctx).Create(&Prices{
-			Code:       price.Usdbrl.Code,
-			Codein:     price.Usdbrl.Codein,
-			Name:       price.Usdbrl.Name,
-			High:       price.Usdbrl.High,
-			Low:        price.Usdbrl.Low,
-			VarBid:     price.Usdbrl.VarBid,
-			PctChange:  price.Usdbrl.PctChange,
-			Bid:        price.Usdbrl.Bid,
-			Ask:        price.Usdbrl.Ask,
-			Timestamp:  price.Usdbrl.Timestamp,
-			CreateDate: price.Usdbrl.CreateDate,
-		})
+			ResponseAPI: ResponseAPI{
+				Usdbrl: struct {
+					Code       string `json:"code"`
+					Codein     string `json:"codein"`
+					Name       string `json:"name"`
+					High       string `json:"high"`
+					Low        string `json:"low"`
+					VarBid     string `json:"varBid"`
+					PctChange  string `json:"pctChange"`
+					Bid        string `json:"bid"`
+					Ask        string `json:"ask"`
+					Timestamp  string `json:"timestamp"`
+					CreateDate string `json:"create_date"`
+				}{
+					Code:       "USD",
+					Codein:     "BRL",
+					Name:       "US Dollar to Brazilian Real",
+					High:       "5.50",
+					Low:        "5.40",
+					VarBid:     "0.10",
+					PctChange:  "1.85",
+					Bid:        "5.45",
+					Ask:        "5.55",
+					Timestamp:  "2023-05-15 10:30:00",
+					CreateDate: "2023-05-15",
+				},
+		}})
 	}
 	return nil
 }

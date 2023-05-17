@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -11,27 +12,27 @@ import (
 	"gorm.io/gorm"
 )
 
+type Usdbrl struct {
+	Code       string `json:"code"`
+	Codein     string `json:"codein"`
+	Name       string `json:"name"`
+	High       string `json:"high"`
+	Low        string `json:"low"`
+	VarBid     string `json:"varBid"`
+	PctChange  string `json:"pctChange"`
+	Bid        string `json:"bid"`
+	Ask        string `json:"ask"`
+	Timestamp  string `json:"timestamp"`
+	CreateDate string `json:"create_date"`
+}
+
 type ResponseAPI struct {
-	gorm.Model
-	Usdbrl struct {
-		Code       string `json:"code"`
-		Codein     string `json:"codein"`
-		Name       string `json:"name"`
-		High       string `json:"high"`
-		Low        string `json:"low"`
-		VarBid     string `json:"varBid"`
-		PctChange  string `json:"pctChange"`
-		Bid        string `json:"bid"`
-		Ask        string `json:"ask"`
-		Timestamp  string `json:"timestamp"`
-		CreateDate string `json:"create_date"`
-	} `json:"USDBRL"`
+	Usdbrl `json:"USDBRL"`
 }
 
 type Prices struct {
-	gorm.Model
-	ID         int    `gorm:"primaryKey"`
-	ResponseAPI ResponseAPI `gorm:"-"` 
+	ID          int `gorm:"primaryKey"`
+	ResponseAPI `gorm:"ResponseAPI"`
 }
 
 func main() {
@@ -105,39 +106,31 @@ func insertPrice(price *ResponseAPI) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
 	defer cancel()
 
+	prices := &Prices{
+		ResponseAPI: ResponseAPI{
+			Usdbrl: Usdbrl{
+				Code:       price.Usdbrl.Code,
+				Codein:     price.Usdbrl.Codein,
+				Name:       price.Usdbrl.Name,
+				High:       price.Usdbrl.High,
+				Low:        price.Usdbrl.Low,
+				VarBid:     price.Usdbrl.VarBid,
+				PctChange:  price.Usdbrl.PctChange,
+				Bid:        price.Usdbrl.Bid,
+				Ask:        price.Usdbrl.Ask,
+				Timestamp:  price.Usdbrl.Timestamp,
+				CreateDate: price.Usdbrl.CreateDate,
+			},
+		}}
+
+	fmt.Println(prices)
+
 	select {
 	case <-ctx.Done():
 		println("timeout")
 		return ctx.Err()
 	default:
-		db.WithContext(ctx).Create(&Prices{
-			ResponseAPI: ResponseAPI{
-				Usdbrl: struct {
-					Code       string `json:"code"`
-					Codein     string `json:"codein"`
-					Name       string `json:"name"`
-					High       string `json:"high"`
-					Low        string `json:"low"`
-					VarBid     string `json:"varBid"`
-					PctChange  string `json:"pctChange"`
-					Bid        string `json:"bid"`
-					Ask        string `json:"ask"`
-					Timestamp  string `json:"timestamp"`
-					CreateDate string `json:"create_date"`
-				}{
-					Code:       "USD",
-					Codein:     "BRL",
-					Name:       "US Dollar to Brazilian Real",
-					High:       "5.50",
-					Low:        "5.40",
-					VarBid:     "0.10",
-					PctChange:  "1.85",
-					Bid:        "5.45",
-					Ask:        "5.55",
-					Timestamp:  "2023-05-15 10:30:00",
-					CreateDate: "2023-05-15",
-				},
-		}})
+		db.WithContext(ctx).Create(prices)
 	}
 	return nil
 }
